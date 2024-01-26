@@ -34,9 +34,7 @@ function setStone(row, column, unconditionallySet) {
 function canSetStone(row, column) {
   if (othelloData[row][column] != 0) {
     return false;
-
   } else {
-
     const direction = [
       [-1, 0], // 左
       [-1, 1], // 左下
@@ -48,25 +46,31 @@ function canSetStone(row, column) {
       [-1, -1], // 左上
     ];
 
-    let existNearStone = false;
+    let reversibleSquare = [];
 
     for (let i = 0; i < direction.length; i++) {
-      let dx = row + direction[i][0];
-      let dy = column + direction[i][1];
-
-      
-
-      if (dx >= 0 && dy >= 0 && dx <= 7 && dy <= 7) {
-        if(othelloData[dx][dy] !== 0){
-          existNearStone = true;
-        }
-      }
-
+      reversibleSquare.push(searchReversibleSquare(row, column, direction[i][0], direction[i][1]));
     }
-
-    return existNearStone;
-
   }
+
+  console.log(reversibleSquare);
+
+  return;
+}
+
+function searchReversibleSquare(row, column, dx, dy) {
+  //この関数に引数として(座標)を与えることでsearchを集約する
+  let x = row + dx;
+  let y = column + dy;
+
+  let tmpReversibleSquare = [];
+
+  if (othelloData[x][y] === othelloColor ? -1 : 1) {
+    tmpReversibleSquare.push(searchReversibleSquare(x, y, dx, dy));
+    tmpReversibleSquare.push([x, y]);
+  }
+
+  return tmpReversibleSquare;
 }
 
 window.onload = function () {
