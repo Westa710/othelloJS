@@ -35,7 +35,24 @@ function canSetStone(row, column) {
   if (othelloData[row][column] != 0) {
     return false;
   } else {
-    return true;
+    const direction = [
+      [-1, 0], // 左
+      [-1, 1], // 左下
+      [0, 1], // 下
+      [1, 1], // 右下
+      [1, 0], // 右
+      [1, -1], // 右上
+      [0, -1], // 上
+      [-1, -1], // 左上
+    ];
+
+    for (let i = 0; i < direction.length; i++) {
+      dx = row + direction[i][0];
+      dy = column + direction[i][0];
+
+      if (dx >= 0 && dy >= 0 && dx <= 7 && dy <= 7) {
+      }
+    }
   }
 }
 
