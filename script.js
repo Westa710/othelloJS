@@ -1,33 +1,45 @@
 "use strict";
 
 let othelloData = [
+  // 0:空 1:黒 -1:白
   [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, -1, 1, 0, 0, 0],
-  [0, 0, 0, 1, -1, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
-const othelloWhite = "○";
-const othelloBlack = "●";
 let othelloColor = true; //true:黒 false:白
 
-function setStone(row, column) {
-  let stage = document.getElementById("stage");
+function setStone(row, column, unconditionallySet) {
+  if (canSetStone(row, column) || unconditionallySet) {
+    let stage = document.getElementById("stage");
 
-  let square = stage.rows[row].cells[column];
+    let square = stage.rows[row].cells[column];
 
-  square.querySelector("div").classList.add(othelloColor ? "black" : "white");
+    square.querySelector("div").classList.add(othelloColor ? "black" : "white");
 
-  othelloColor = !othelloColor;
+    othelloData[row][column] = othelloColor ? 1 : -1;
+
+    othelloColor = !othelloColor;
+  } else {
+    window.alert("そこに石はおけません。");
+  }
+  console.log(othelloData);
 }
 
-function canSetStone() {}
+function canSetStone(row, column) {
+  if (othelloData[row][column] != 0) {
+    return false;
+  } else {
+    return true;
+  }
+}
 
-window.onload = function setupStage() {
+window.onload = function () {
   //盤面の作成
 
   const stage = document.getElementById("stage");
@@ -48,15 +60,15 @@ window.onload = function setupStage() {
 
         console.log(`[${row}][${column}]`);
 
-        setStone(row, column, othelloColor);
+        setStone(row, column, false);
       };
     }
 
     stage.appendChild(squareRow);
   }
 
-  setStone(3, 4);
-  setStone(3, 3);
-  setStone(4, 3);
-  setStone(4, 4);
+  setStone(3, 4, true);
+  setStone(3, 3, true);
+  setStone(4, 3, true);
+  setStone(4, 4, true);
 };

@@ -6,16 +6,16 @@ table {
 
 td {
   font-size: 80px;
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
   border: black 4px solid;
   text-align: center;
   position: relative;
 }
 
 .white {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   background: white;
   border-radius: 100%;
   margin: auto;
@@ -27,8 +27,8 @@ td {
 }
 
 .black {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   background: black;
   border-radius: 100%;
   margin: auto;
