@@ -48,16 +48,24 @@ function canSetStone(row, column) {
       [-1, -1], // 左上
     ];
 
+    let existNearStone = false;
+
     for (let i = 0; i < direction.length; i++) {
       let dx = row + direction[i][0];
-      let dy = column + direction[i][0];
+      let dy = column + direction[i][1];
+
+      
 
       if (dx >= 0 && dy >= 0 && dx <= 7 && dy <= 7) {
-      } else {
-        continue;
+        if(othelloData[dx][dy] !== 0){
+          existNearStone = true;
+        }
       }
 
     }
+
+    return existNearStone;
+
   }
 }
 
