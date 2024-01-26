@@ -15,7 +15,7 @@ let othelloData = [
 let othelloColor = true; //true:黒 false:白
 
 function setStone(row, column, unconditionallySet) {
-  if (canSetStone(row, column) || unconditionallySet) {
+  if (unconditionallySet || canSetStone(row, column)) {
     let stage = document.getElementById("stage");
 
     let square = stage.rows[row].cells[column];
@@ -34,7 +34,9 @@ function setStone(row, column, unconditionallySet) {
 function canSetStone(row, column) {
   if (othelloData[row][column] != 0) {
     return false;
+
   } else {
+
     const direction = [
       [-1, 0], // 左
       [-1, 1], // 左下
@@ -47,11 +49,14 @@ function canSetStone(row, column) {
     ];
 
     for (let i = 0; i < direction.length; i++) {
-      dx = row + direction[i][0];
-      dy = column + direction[i][0];
+      let dx = row + direction[i][0];
+      let dy = column + direction[i][0];
 
       if (dx >= 0 && dy >= 0 && dx <= 7 && dy <= 7) {
+      } else {
+        continue;
       }
+
     }
   }
 }
