@@ -13,13 +13,24 @@ let othelloData = [
 ];
 
 let othelloColor = true; //true:黒 false:白
+let squareCount = 0;
 
 function setStone(row, column, unconditionallySet) {
+  let description = document.getElementById("description");
+
   if (unconditionallySet || canSetStone(row, column)) {
     putStone(row, column);
-    othelloColor = !othelloColor;
+    squareCount++;
+    console.log(`squareCount = ${squareCount}`);
+    if (squareCount === 7) {
+      description.textContent = "ゲーム終了";
+      totalUpStone();
+    } else {
+      othelloColor = !othelloColor;
+      description.textContent = othelloColor ? "黒の番です。" : "白の番です。";
+    }
   } else {
-    window.alert("そこに石はおけません。");
+    description.textContent = "そこに石はおけません。";
   }
   console.log(othelloData);
 }
@@ -113,14 +124,41 @@ function searchReversibleStone(sRow, sColumn) {
   return reversibleSquare;
 }
 
-// function searchOneDirection(squareArr, row, column, dx, dy) {
-//   if (othelloData[row + dx][column + dy] === othelloColor ? -1 : 1) {
-//     searchOneDirection(squareArr, row + dx, column + dy, dx, dy);
-//     squareArr.push([row + dx, column + dy]);
-//   }
+function totalUpStone() {
+  let stones = document.querySelectorAll(".stone");
+  console.log(stones);
+  stones.forEach(function (element) {
+    element.removeEventListener("click", setEvent);
+    console.log("イベントの削除");
+  });
+  let blackStone = 0;
+  let whiteStone = 0;
 
-//   return squareArr;
-// }
+  for (let i = 0; i <= 7; i++) {
+    for (let j = 0; j <= 7; j++) {
+      switch (othelloData[i][j]) {
+        case 1:
+          blackStone++;
+          break;
+        case -1:
+          whiteStone++;
+          break;
+      }
+    }
+    let total = document.getElementById("score");
+
+    let winOrLose;
+    if (blackStone > whiteStone) {
+      winOrLose = "黒の勝ち";
+    } else if (blackStone < whiteStone) {
+      winOrLose = "白の勝ち";
+    } else {
+      winOrLose = "引き分け";
+    }
+
+    total.textContent = `黒：${blackStone}　白：${whiteStone}で${winOrLose}。`;
+  }
+}
 
 window.onload = function () {
   //盤面の作成
@@ -133,18 +171,12 @@ window.onload = function () {
     for (let j = 0; j <= 7; j++) {
       let square = document.createElement("td");
       const stone = document.createElement("div");
+      stone.classList.add("stone");
       // square.textContent = othelloBlack;
       square.appendChild(stone);
       squareRow.appendChild(square);
 
-      square.onclick = function () {
-        let row = this.parentNode.rowIndex;
-        let column = this.cellIndex;
-
-        console.log(`[${row}][${column}]`);
-
-        setStone(row, column, false);
-      };
+      square.addEventListener("click", setEvent);
     }
 
     stage.appendChild(squareRow);
@@ -155,3 +187,12 @@ window.onload = function () {
   setStone(4, 3, true);
   setStone(4, 4, true);
 };
+
+function setEvent() {
+  let row = this.parentNode.rowIndex;
+  let column = this.cellIndex;
+
+  console.log(`[${row}][${column}]`);
+
+  setStone(row, column, false);
+}

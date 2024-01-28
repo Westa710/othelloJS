@@ -38,3 +38,8 @@ td {
   bottom: 0;
   left: 0;
 }
+
+#description,
+#score {
+  font-size: 40px;
+}
