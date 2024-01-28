@@ -16,14 +16,7 @@ let othelloColor = true; //true:黒 false:白
 
 function setStone(row, column, unconditionallySet) {
   if (unconditionallySet || canSetStone(row, column)) {
-    let stage = document.getElementById("stage");
-
-    let square = stage.rows[row].cells[column];
-
-    square.querySelector("div").classList.add(othelloColor ? "black" : "white");
-
-    othelloData[row][column] = othelloColor ? 1 : -1;
-
+    putStone(row, column);
     othelloColor = !othelloColor;
   } else {
     window.alert("そこに石はおけません。");
@@ -31,26 +24,41 @@ function setStone(row, column, unconditionallySet) {
   console.log(othelloData);
 }
 
-function canSetStone(row, column) {
-  //searchReversibleSquareから返された二次元配列の中に、othelloData[row][column]が
-  //含まれていたらtrueを返す
+function putStone(row, column) {
+  let stage = document.getElementById("stage");
 
+  let square = stage.rows[row].cells[column];
+
+  if (square.querySelector("div").classList.contains(!othelloColor ? "black" : "white")) {
+    square.querySelector("div").classList.remove(!othelloColor ? "black" : "white");
+  }
+  square.querySelector("div").classList.add(othelloColor ? "black" : "white");
+
+  othelloData[row][column] = othelloColor ? 1 : -1;
+}
+
+function canSetStone(row, column) {
   if (othelloData[row][column] != 0) {
     return false;
   }
 
-  const reversibleArr = searchTurningStone(row, column);
+  const reversibleArr = searchReversibleStone(row, column);
 
   console.log(reversibleArr);
 
-  // reversibleArr.includes();
+  // 返された配列が空ならfalseを返す
+  if (reversibleArr.length === 0) {
+    return false;
+  }
 
-  // 返された配列を検索し、その中に[row][column]が含まれているか調べる
+  for (let i = 0; i <= reversibleArr.length - 1; i++) {
+    putStone(reversibleArr[i][0], reversibleArr[i][1]);
+  }
 
   return true;
 }
 
-function searchTurningStone(sRow, sColumn) {
+function searchReversibleStone(sRow, sColumn) {
   //この関数に引数として(座標)を与えることでsearchを集約する
   //返り値：[sRow][sColumn]に置いたとき、ひっくり返る石の座標(二次元配列)
 
@@ -83,7 +91,7 @@ function searchTurningStone(sRow, sColumn) {
         dx += direction[i][0];
         dy += direction[i][1];
 
-        if (dx < 0 || dy < 0 || dx > 7 || dy > 7 || othelloData[dy][dx] === 0) {
+        if (dx < 0 || dy < 0 || dx > 7 || dy > 7 || othelloData[dx][dy] === 0) {
           tmpReverseStone = [];
           break;
         }
@@ -146,6 +154,4 @@ window.onload = function () {
   setStone(3, 3, true);
   setStone(4, 3, true);
   setStone(4, 4, true);
-  setStone(5, 3, true);
-  setStone(5, 4, true);
 };
