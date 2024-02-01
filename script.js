@@ -14,6 +14,7 @@ let othelloData = [
 
 let othelloColor = true; //true:黒 false:白
 let squareCount = 0;
+let isInGame = true;
 
 function setStone(row, column, unconditionallySet) {
   let description = document.getElementById("description");
@@ -22,7 +23,7 @@ function setStone(row, column, unconditionallySet) {
     putStone(row, column);
     squareCount++;
     console.log(`squareCount = ${squareCount}`);
-    if (squareCount === 7) {
+    if (squareCount === 64) {
       description.textContent = "ゲーム終了";
       totalUpStone();
     } else {
@@ -125,12 +126,15 @@ function searchReversibleStone(sRow, sColumn) {
 }
 
 function totalUpStone() {
-  let stones = document.querySelectorAll(".stone");
-  console.log(stones);
-  stones.forEach(function (element) {
-    element.removeEventListener("click", setEvent);
-    console.log("イベントの削除");
-  });
+  // let stones = document.querySelectorAll(".stone");
+  // console.log(stones);
+  // stones.forEach(function (element) {
+  //   element.removeEventListener("click", setEvent);
+  //   console.log("イベントの削除");
+  // });
+
+  isInGame = false;
+
   let blackStone = 0;
   let whiteStone = 0;
 
@@ -162,13 +166,32 @@ function totalUpStone() {
 
 window.onload = function () {
   //盤面の作成
+  resetStage();
+};
 
+function resetStage() {
   const stage = document.getElementById("stage");
 
+  while (stage.firstChild) {
+    stage.removeChild(stage.firstChild);
+  }
+
   for (let i = 0; i <= 7; i++) {
+    for (let j = 0; j <= 7; j++) {
+      othelloData[i][j] = 0;
+    }
+  }
+
+  squareCount = 0;
+  othelloColor = true;
+  isInGame = true;
+
+  document.getElementById("score").textContent = "";
+
+  for (let k = 0; k <= 7; k++) {
     let squareRow = document.createElement("tr");
 
-    for (let j = 0; j <= 7; j++) {
+    for (let l = 0; l <= 7; l++) {
       let square = document.createElement("td");
       const stone = document.createElement("div");
       stone.classList.add("stone");
@@ -182,17 +205,24 @@ window.onload = function () {
     stage.appendChild(squareRow);
   }
 
+  console.log(othelloData);
+
   setStone(3, 4, true);
   setStone(3, 3, true);
   setStone(4, 3, true);
   setStone(4, 4, true);
-};
+
+  let resetBtn = document.getElementById("reset-btn");
+  resetBtn.addEventListener("click", resetStage);
+}
 
 function setEvent() {
-  let row = this.parentNode.rowIndex;
-  let column = this.cellIndex;
+  if (isInGame) {
+    let row = this.parentNode.rowIndex;
+    let column = this.cellIndex;
 
-  console.log(`[${row}][${column}]`);
+    console.log(`[${row}][${column}]`);
 
-  setStone(row, column, false);
+    setStone(row, column, false);
+  }
 }

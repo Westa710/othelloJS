@@ -43,3 +43,26 @@ td {
 #score {
   font-size: 40px;
 }
+
+#reset-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #228bc8;
+  box-sizing: border-box;
+  width: 100px;
+  height: 50px;
+  color: #228bc8;
+  font-size: 16px;
+  text-decoration: none;
+  position: relative;
+  transition-duration: 0.2s;
+  text-align: center;
+  margin: 5px 0 0 10px;
+}
+
+#reset-btn:hover {
+  background: #228bc8;
+  color: #fff;
+}
