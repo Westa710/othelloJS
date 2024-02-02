@@ -234,25 +234,22 @@ function skipTurn() {
   if (!existPlaceableSquare()) {
     othelloColor = !othelloColor;
     description.textContent = `パスしました。${othelloColor ? "黒の番です。" : "白の番です。"}`;
-  }else{
-    description.textContent =`置けます。${othelloColor ? "黒の番です。" : "白の番です。"}`
+  } else {
+    description.textContent = `置けます。${othelloColor ? "黒の番です。" : "白の番です。"}`;
   }
 }
 
 function existPlaceableSquare() {
-  //すべての空きマスを走査して、ひっくり返る石が一つもなかったtrueとなりスキップ可能
+  //すべての空きマスを走査して、ひっくり返る石が一つでもあったらtrueとなりスキップ不可能
   //一つでもあったらfalse
 
-  
+  for (let i = 0; i <= 7; i++) {
+    for (let j = 0; j <= 7; j++) {
+      if (othelloData[i][j] === 0) {
+        let reversibleSquareArr = searchReversibleStone(i, j);
+        console.log(`Data[${i}][${j}]` + reversibleSquareArr);
 
-  for(let i = 0;i <= 7;i++){
-    for(let j = 0; j <= 7;j++){
-      if(othelloData[i][j] === 0){
-        
-        let reversibleSquareArr = searchReversibleStone(i,j);
-        console.log(`Data[${i}][${j}]`+reversibleSquareArr);
-
-        if(reversibleSquareArr.length !== 0){
+        if (reversibleSquareArr.length !== 0) {
           return true;
         }
       }
