@@ -87,8 +87,6 @@ function searchReversibleStone(sRow, sColumn) {
 
   let reversibleSquare = [];
 
-  //置く石の色が黒の場合のみ実装してみる
-
   for (let i = 0; i <= 7; i++) {
     let dx = sRow + direction[i][0];
     let dy = sColumn + direction[i][1];
@@ -233,14 +231,32 @@ function setEvent() {
 function skipTurn() {
   let description = document.getElementById("description");
 
-  if (noPlaceableSquare()) {
+  if (!existPlaceableSquare()) {
     othelloColor = !othelloColor;
     description.textContent = `パスしました。${othelloColor ? "黒の番です。" : "白の番です。"}`;
+  }else{
+    description.textContent =`置けます。${othelloColor ? "黒の番です。" : "白の番です。"}`
   }
 }
 
-function noPlaceableSquare() {
+function existPlaceableSquare() {
   //すべての空きマスを走査して、ひっくり返る石が一つもなかったtrueとなりスキップ可能
   //一つでもあったらfalse
-  return true;
+
+  
+
+  for(let i = 0;i <= 7;i++){
+    for(let j = 0; j <= 7;j++){
+      if(othelloData[i][j] === 0){
+        
+        let reversibleSquareArr = searchReversibleStone(i,j);
+        console.log(`Data[${i}][${j}]`+reversibleSquareArr);
+
+        if(reversibleSquareArr.length !== 0){
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
