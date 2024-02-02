@@ -44,7 +44,8 @@ td {
   font-size: 40px;
 }
 
-#reset-btn {
+#reset-btn,
+#pass-btn {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,7 +63,8 @@ td {
   margin: 5px 0 0 10px;
 }
 
-#reset-btn:hover {
+#reset-btn:hover,
+#pass-btn:hover {
   background: #228bc8;
   color: #fff;
 }

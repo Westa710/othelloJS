@@ -214,6 +214,9 @@ function resetStage() {
 
   let resetBtn = document.getElementById("reset-btn");
   resetBtn.addEventListener("click", resetStage);
+
+  let passBtn = document.getElementById("pass-btn");
+  passBtn.addEventListener("click", skipTurn);
 }
 
 function setEvent() {
@@ -225,4 +228,19 @@ function setEvent() {
 
     setStone(row, column, false);
   }
+}
+
+function skipTurn() {
+  let description = document.getElementById("description");
+
+  if (noPlaceableSquare()) {
+    othelloColor = !othelloColor;
+    description.textContent = `パスしました。${othelloColor ? "黒の番です。" : "白の番です。"}`;
+  }
+}
+
+function noPlaceableSquare() {
+  //すべての空きマスを走査して、ひっくり返る石が一つもなかったtrueとなりスキップ可能
+  //一つでもあったらfalse
+  return true;
 }
