@@ -23,7 +23,7 @@ function setStone(row, column, unconditionallySet) {
     putStone(row, column);
     squareCount++;
     console.log(`squareCount = ${squareCount}`);
-    if (squareCount === 64) {
+    if (squareCount === 64 || nothingOneColor()) {
       description.textContent = "ゲーム終了";
       totalUpStone();
     } else {
@@ -31,9 +31,8 @@ function setStone(row, column, unconditionallySet) {
       description.textContent = othelloColor ? "黒の番です。" : "白の番です。";
     }
   } else {
-    description.textContent = "そこに石はおけません。";
+    description.textContent = `そこに石はおけません。${othelloColor ? "黒の番です。" : "白の番です。"}`;
   }
-  console.log(othelloData);
 }
 
 function putStone(row, column) {
@@ -121,6 +120,24 @@ function searchReversibleStone(sRow, sColumn) {
   }
 
   return reversibleSquare;
+}
+
+function nothingOneColor() {
+  if (squareCount <= 4) {
+    return false;
+  }
+
+  for (let i = 0; i <= 7; i++) {
+    for (let j = 0; j <= 7; j++) {
+      if (othelloData[i][j] === (othelloColor ? -1 : 1)) {
+        console.log("occupied:false");
+        return false;
+      }
+    }
+  }
+
+  console.log("occupied:true");
+  return true;
 }
 
 function totalUpStone() {
@@ -230,6 +247,10 @@ function setEvent() {
 
 function skipTurn() {
   let description = document.getElementById("description");
+
+  if (!isInGame) {
+    return;
+  }
 
   if (!existPlaceableSquare()) {
     othelloColor = !othelloColor;
