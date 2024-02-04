@@ -2,6 +2,8 @@ table {
   background-color: green;
   border-collapse: collapse;
   table-layout: fixed;
+  margin: 30px auto;
+  text-align: center;
 }
 
 td {
@@ -42,11 +44,17 @@ td {
 #description,
 #score {
   font-size: 40px;
+  text-align: center;
+}
+
+.game-btn {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 30px;
 }
 
 #reset-btn,
 #pass-btn {
-  display: flex;
   justify-content: center;
   align-items: center;
   background: #fff;
@@ -66,5 +74,38 @@ td {
 #reset-btn:hover,
 #pass-btn:hover {
   background: #228bc8;
+  color: #fff;
+}
+
+.size-radio {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 30px;
+}
+.size-radio input {
+  display: none;
+}
+.size-radio label {
+  display: block;
+  float: left;
+  cursor: pointer;
+  width: 180px;
+  margin: 1px 0 1px 0;
+  padding: 1.4% 0 1.5% 0;
+  border-right: 1px solid #d7d7d7;
+  background: #e5e5e5;
+  color: #555e64;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1;
+  transition: 0.2s;
+}
+
+.size-radio label:last-of-type {
+  border-right: 0px;
+}
+.size-radio input[type="radio"]:checked + label {
+  background-color: #a1b91d;
   color: #fff;
 }

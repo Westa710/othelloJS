@@ -2,19 +2,18 @@
 
 let othelloData = [
   // 0:空 1:黒 -1:白
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
+  // 盤面。サイズはラジオボタンの入力によって変化
 ];
 
 let othelloColor = true; //true:黒 false:白
 let squareCount = 0;
 let isInGame = true;
+let stageSize;
+
+const othelloBlack = 1;
+const othelloWhite = -1;
+
+let textBorW;
 
 function setStone(row, column, unconditionallySet) {
   let description = document.getElementById("description");
@@ -22,16 +21,16 @@ function setStone(row, column, unconditionallySet) {
   if (unconditionallySet || canSetStone(row, column)) {
     putStone(row, column);
     squareCount++;
-    console.log(`squareCount = ${squareCount}`);
-    if (squareCount === 64 || nothingOneColor()) {
+    if (squareCount === stageSize ** 2 || nothingOneColor() || canNotContinue()) {
       description.textContent = "ゲーム終了";
       totalUpStone();
     } else {
       othelloColor = !othelloColor;
-      description.textContent = othelloColor ? "黒の番です。" : "白の番です。";
+      textBorW = othelloColor ? "黒の番です。" : "白の番です。";
+      description.textContent = textBorW;
     }
   } else {
-    description.textContent = `そこに石はおけません。${othelloColor ? "黒の番です。" : "白の番です。"}`;
+    description.textContent = `そこに石はおけません。${textBorW}`;
   }
 }
 
@@ -90,7 +89,7 @@ function searchReversibleStone(sRow, sColumn) {
     let dx = sRow + direction[i][0];
     let dy = sColumn + direction[i][1];
 
-    if (dx >= 0 && dy >= 0 && dx <= 7 && dy <= 7 && othelloData[dx][dy] === (othelloColor ? -1 : 1)) {
+    if (dx >= 0 && dy >= 0 && dx <= stageSize - 1 && dy <= stageSize - 1 && othelloData[dx][dy] === (othelloColor ? othelloWhite : othelloBlack)) {
       let tmpReverseStone = [];
       let reverseStone = [];
       tmpReverseStone.push([dx, dy]);
@@ -100,16 +99,16 @@ function searchReversibleStone(sRow, sColumn) {
         dx += direction[i][0];
         dy += direction[i][1];
 
-        if (dx < 0 || dy < 0 || dx > 7 || dy > 7 || othelloData[dx][dy] === 0) {
+        if (dx < 0 || dy < 0 || dx > stageSize - 1 || dy > stageSize - 1 || othelloData[dx][dy] === 0) {
           tmpReverseStone = [];
           break;
         }
 
-        if (othelloData[dx][dy] === (othelloColor ? -1 : 1)) {
+        if (othelloData[dx][dy] === (othelloColor ? othelloWhite : othelloBlack)) {
           tmpReverseStone.push([dx, dy]);
         }
 
-        if (othelloData[dx][dy] === (othelloColor ? 1 : -1)) {
+        if (othelloData[dx][dy] === (othelloColor ? othelloBlack : othelloWhite)) {
           reverseStone = reverseStone.concat(tmpReverseStone);
           tmpReverseStone = [];
           break;
@@ -123,38 +122,40 @@ function searchReversibleStone(sRow, sColumn) {
 }
 
 function nothingOneColor() {
+  //盤面がどちらかの色のみで埋まった場合にゲームを終了
   if (squareCount <= 4) {
     return false;
   }
 
-  for (let i = 0; i <= 7; i++) {
-    for (let j = 0; j <= 7; j++) {
-      if (othelloData[i][j] === (othelloColor ? -1 : 1)) {
-        console.log("occupied:false");
+  for (let i = 0; i <= stageSize - 1; i++) {
+    for (let j = 0; j <= stageSize - 1; j++) {
+      if (othelloData[i][j] === (othelloColor ? othelloWhite : othelloBlack)) {
         return false;
       }
     }
   }
 
-  console.log("occupied:true");
   return true;
 }
 
-function totalUpStone() {
-  // let stones = document.querySelectorAll(".stone");
-  // console.log(stones);
-  // stones.forEach(function (element) {
-  //   element.removeEventListener("click", setEvent);
-  //   console.log("イベントの削除");
-  // });
+function canNotContinue() {
+  //白も黒もはさめない場合にゲームを終了
+  for (let i = 0; i <= stageSize - 1; i++) {
+    for (let j = 0; j <= stageSize - 1; j++) {
+      if (othelloData[i][j] === 0) {
+      }
+    }
+  }
+}
 
+function totalUpStone() {
   isInGame = false;
 
   let blackStone = 0;
   let whiteStone = 0;
 
-  for (let i = 0; i <= 7; i++) {
-    for (let j = 0; j <= 7; j++) {
+  for (let i = 0; i <= stageSize - 1; i++) {
+    for (let j = 0; j <= stageSize - 1; j++) {
       switch (othelloData[i][j]) {
         case 1:
           blackStone++;
@@ -185,16 +186,34 @@ window.onload = function () {
 };
 
 function resetStage() {
+  let elements = document.getElementsByName("size-select");
+  let len = elements.length;
+  let checkValue = "";
+
+  for (let i = 0; i < len; i++) {
+    if (elements.item(i).checked) {
+      checkValue = elements.item(i).value;
+    }
+  }
+
+  stageSize = parseInt(checkValue, 10);
+  console.log("stageSize = " + stageSize);
+
+  othelloData = [];
+
+  for (let i = 0; i <= stageSize - 1; i++) {
+    let row = [];
+    for (let j = 0; j <= stageSize - 1; j++) {
+      row.push(0);
+    }
+    othelloData.push(row);
+  }
+
   const stage = document.getElementById("stage");
+  stage.innerHTML = "";
 
   while (stage.firstChild) {
     stage.removeChild(stage.firstChild);
-  }
-
-  for (let i = 0; i <= 7; i++) {
-    for (let j = 0; j <= 7; j++) {
-      othelloData[i][j] = 0;
-    }
   }
 
   squareCount = 0;
@@ -203,10 +222,10 @@ function resetStage() {
 
   document.getElementById("score").textContent = "";
 
-  for (let k = 0; k <= 7; k++) {
+  for (let k = 0; k <= stageSize - 1; k++) {
     let squareRow = document.createElement("tr");
 
-    for (let l = 0; l <= 7; l++) {
+    for (let l = 0; l <= stageSize - 1; l++) {
       let square = document.createElement("td");
       const stone = document.createElement("div");
       stone.classList.add("stone");
@@ -222,10 +241,10 @@ function resetStage() {
 
   console.log(othelloData);
 
-  setStone(3, 4, true);
-  setStone(3, 3, true);
-  setStone(4, 3, true);
-  setStone(4, 4, true);
+  setStone(stageSize / 2 - 1, stageSize / 2, true);
+  setStone(stageSize / 2 - 1, stageSize / 2 - 1, true);
+  setStone(stageSize / 2, stageSize / 2 - 1, true);
+  setStone(stageSize / 2, stageSize / 2, true);
 
   let resetBtn = document.getElementById("reset-btn");
   resetBtn.addEventListener("click", resetStage);
@@ -256,7 +275,7 @@ function skipTurn() {
     othelloColor = !othelloColor;
     description.textContent = `パスしました。${othelloColor ? "黒の番です。" : "白の番です。"}`;
   } else {
-    description.textContent = `置けます。${othelloColor ? "黒の番です。" : "白の番です。"}`;
+    description.textContent = `置ける場所があります。${textBorW}`;
   }
 }
 
@@ -264,8 +283,8 @@ function existPlaceableSquare() {
   //すべての空きマスを走査して、ひっくり返る石が一つでもあったらtrueとなりスキップ不可能
   //一つでもあったらfalse
 
-  for (let i = 0; i <= 7; i++) {
-    for (let j = 0; j <= 7; j++) {
+  for (let i = 0; i <= stageSize - 1; i++) {
+    for (let j = 0; j <= stageSize - 1; j++) {
       if (othelloData[i][j] === 0) {
         let reversibleSquareArr = searchReversibleStone(i, j);
         console.log(`Data[${i}][${j}]` + reversibleSquareArr);
