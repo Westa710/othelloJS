@@ -21,8 +21,12 @@ function setStone(row, column, unconditionallySet) {
   if (unconditionallySet || canSetStone(row, column)) {
     putStone(row, column);
     squareCount++;
-    if (squareCount === stageSize ** 2 || nothingOneColor() || canNotContinue()) {
-      description.textContent = "ゲーム終了";
+    if (squareCount === stageSize ** 2 || canNotContinue()) {
+      let additionalWords = "";
+      if (squareCount !== stageSize ** 2) {
+        additionalWords = "(両者とも置ける場所がありません)";
+      }
+      description.textContent = `ゲーム終了${additionalWords}。`;
       totalUpStone();
     } else {
       othelloColor = !othelloColor;
@@ -52,7 +56,7 @@ function canSetStone(row, column) {
     return false;
   }
 
-  const reversibleArr = searchReversibleStone(row, column);
+  const reversibleArr = searchReversibleStone(row, column, othelloColor);
 
   console.log(reversibleArr);
 
@@ -68,7 +72,7 @@ function canSetStone(row, column) {
   return true;
 }
 
-function searchReversibleStone(sRow, sColumn) {
+function searchReversibleStone(sRow, sColumn, sColor) {
   //この関数に引数として(座標)を与えることでsearchを集約する
   //返り値：[sRow][sColumn]に置いたとき、ひっくり返る石の座標(二次元配列)
 
@@ -89,7 +93,7 @@ function searchReversibleStone(sRow, sColumn) {
     let dx = sRow + direction[i][0];
     let dy = sColumn + direction[i][1];
 
-    if (dx >= 0 && dy >= 0 && dx <= stageSize - 1 && dy <= stageSize - 1 && othelloData[dx][dy] === (othelloColor ? othelloWhite : othelloBlack)) {
+    if (dx >= 0 && dy >= 0 && dx <= stageSize - 1 && dy <= stageSize - 1 && othelloData[dx][dy] === (sColor ? othelloWhite : othelloBlack)) {
       let tmpReverseStone = [];
       let reverseStone = [];
       tmpReverseStone.push([dx, dy]);
@@ -104,11 +108,11 @@ function searchReversibleStone(sRow, sColumn) {
           break;
         }
 
-        if (othelloData[dx][dy] === (othelloColor ? othelloWhite : othelloBlack)) {
+        if (othelloData[dx][dy] === (sColor ? othelloWhite : othelloBlack)) {
           tmpReverseStone.push([dx, dy]);
         }
 
-        if (othelloData[dx][dy] === (othelloColor ? othelloBlack : othelloWhite)) {
+        if (othelloData[dx][dy] === (sColor ? othelloBlack : othelloWhite)) {
           reverseStone = reverseStone.concat(tmpReverseStone);
           tmpReverseStone = [];
           break;
@@ -121,31 +125,46 @@ function searchReversibleStone(sRow, sColumn) {
   return reversibleSquare;
 }
 
-function nothingOneColor() {
-  //盤面がどちらかの色のみで埋まった場合にゲームを終了
+// function nothingOneColor() {
+//   //盤面がどちらかの色のみで埋まった場合にゲームを終了
+//   if (squareCount <= 4) {
+//     return false;
+//   }
+
+//   for (let i = 0; i <= stageSize - 1; i++) {
+//     for (let j = 0; j <= stageSize - 1; j++) {
+//       if (othelloData[i][j] === (othelloColor ? othelloWhite : othelloBlack)) {
+//         return false;
+//       }
+//     }
+//   }
+
+//   return true;
+// }
+
+function canNotContinue() {
+  //白も黒もはさめない場合にゲームを終了
+
   if (squareCount <= 4) {
     return false;
   }
 
   for (let i = 0; i <= stageSize - 1; i++) {
     for (let j = 0; j <= stageSize - 1; j++) {
-      if (othelloData[i][j] === (othelloColor ? othelloWhite : othelloBlack)) {
-        return false;
+      if (othelloData[i][j] === 0) {
+        let reversibleSquareMySide = searchReversibleStone(i, j, othelloColor);
+        console.log(`Data[${i}][${j}]` + reversibleSquareMySide);
+
+        let reversibleSquareOpponentSide = searchReversibleStone(i, j, !othelloColor);
+        console.log(`Data[${i}][${j}]` + reversibleSquareOpponentSide);
+        if (reversibleSquareMySide.length !== 0 || reversibleSquareOpponentSide.length !== 0) {
+          return false;
+        }
       }
     }
   }
 
   return true;
-}
-
-function canNotContinue() {
-  //白も黒もはさめない場合にゲームを終了
-  for (let i = 0; i <= stageSize - 1; i++) {
-    for (let j = 0; j <= stageSize - 1; j++) {
-      if (othelloData[i][j] === 0) {
-      }
-    }
-  }
 }
 
 function totalUpStone() {
@@ -286,8 +305,8 @@ function existPlaceableSquare() {
   for (let i = 0; i <= stageSize - 1; i++) {
     for (let j = 0; j <= stageSize - 1; j++) {
       if (othelloData[i][j] === 0) {
-        let reversibleSquareArr = searchReversibleStone(i, j);
-        console.log(`Data[${i}][${j}]` + reversibleSquareArr);
+        let reversibleSquareArr = searchReversibleStone(i, j, othelloColor);
+        // console.log(`Data[${i}][${j}]` + reversibleSquareArr);
 
         if (reversibleSquareArr.length !== 0) {
           return true;
