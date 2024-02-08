@@ -109,3 +109,62 @@ td {
   background-color: #a1b91d;
   color: #fff;
 }
+
+@media (max-width: 800px) {
+  body {
+  }
+  table {
+    background-color: green;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin: 30px auto;
+    text-align: center;
+  }
+
+  td {
+    font-size: 80px;
+    width: 40px;
+    height: 40px;
+    border: black 4px solid;
+    text-align: center;
+    position: relative;
+  }
+
+  .white {
+    width: 30px;
+    height: 30px;
+    background: white;
+    border-radius: 100%;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  .black {
+    width: 30px;
+    height: 30px;
+    background: black;
+    border-radius: 100%;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  #description,
+  #score {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .game-btn {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 30px;
+  }
+}
