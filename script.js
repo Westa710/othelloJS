@@ -43,8 +43,14 @@ function putStone(row, column) {
 
   let square = stage.rows[row].cells[column];
 
-  if (square.querySelector("div").classList.contains(!othelloColor ? "black" : "white")) {
-    square.querySelector("div").classList.remove(!othelloColor ? "black" : "white");
+  if (
+    square
+      .querySelector("div")
+      .classList.contains(!othelloColor ? "black" : "white")
+  ) {
+    square
+      .querySelector("div")
+      .classList.remove(!othelloColor ? "black" : "white");
   }
   square.querySelector("div").classList.add(othelloColor ? "black" : "white");
 
@@ -93,7 +99,13 @@ function searchReversibleStone(sRow, sColumn, sColor) {
     let dx = sRow + direction[i][0];
     let dy = sColumn + direction[i][1];
 
-    if (dx >= 0 && dy >= 0 && dx <= stageSize - 1 && dy <= stageSize - 1 && othelloData[dx][dy] === (sColor ? othelloWhite : othelloBlack)) {
+    if (
+      dx >= 0 &&
+      dy >= 0 &&
+      dx <= stageSize - 1 &&
+      dy <= stageSize - 1 &&
+      othelloData[dx][dy] === (sColor ? othelloWhite : othelloBlack)
+    ) {
       let tmpReverseStone = [];
       let reverseStone = [];
       tmpReverseStone.push([dx, dy]);
@@ -103,7 +115,13 @@ function searchReversibleStone(sRow, sColumn, sColor) {
         dx += direction[i][0];
         dy += direction[i][1];
 
-        if (dx < 0 || dy < 0 || dx > stageSize - 1 || dy > stageSize - 1 || othelloData[dx][dy] === 0) {
+        if (
+          dx < 0 ||
+          dy < 0 ||
+          dx > stageSize - 1 ||
+          dy > stageSize - 1 ||
+          othelloData[dx][dy] === 0
+        ) {
           tmpReverseStone = [];
           break;
         }
@@ -155,9 +173,16 @@ function canNotContinue() {
         let reversibleSquareMySide = searchReversibleStone(i, j, othelloColor);
         console.log(`Data[${i}][${j}]` + reversibleSquareMySide);
 
-        let reversibleSquareOpponentSide = searchReversibleStone(i, j, !othelloColor);
+        let reversibleSquareOpponentSide = searchReversibleStone(
+          i,
+          j,
+          !othelloColor
+        );
         console.log(`Data[${i}][${j}]` + reversibleSquareOpponentSide);
-        if (reversibleSquareMySide.length !== 0 || reversibleSquareOpponentSide.length !== 0) {
+        if (
+          reversibleSquareMySide.length !== 0 ||
+          reversibleSquareOpponentSide.length !== 0
+        ) {
           return false;
         }
       }
@@ -167,35 +192,33 @@ function canNotContinue() {
   return true;
 }
 
+//total up white and black stone
+//display the result
+//display the winner
 function totalUpStone() {
-  isInGame = false;
-
   let blackStone = 0;
   let whiteStone = 0;
 
   for (let i = 0; i <= stageSize - 1; i++) {
     for (let j = 0; j <= stageSize - 1; j++) {
-      switch (othelloData[i][j]) {
-        case 1:
-          blackStone++;
-          break;
-        case -1:
-          whiteStone++;
-          break;
+      if (othelloData[i][j] === othelloBlack) {
+        blackStone++;
+      } else if (othelloData[i][j] === othelloWhite) {
+        whiteStone++;
       }
     }
-    let total = document.getElementById("score");
+  }
 
-    let winOrLose;
-    if (blackStone > whiteStone) {
-      winOrLose = "黒の勝ち";
-    } else if (blackStone < whiteStone) {
-      winOrLose = "白の勝ち";
-    } else {
-      winOrLose = "引き分け";
-    }
+  let result = document.getElementById("score");
+  result.textContent = `黒:${blackStone} 白:${whiteStone}`;
 
-    total.textContent = `黒：${blackStone}　白：${whiteStone}で${winOrLose}。`;
+  let winner = document.getElementById("description");
+  if (blackStone > whiteStone) {
+    winner.textContent = "黒の勝ちです。";
+  } else if (blackStone < whiteStone) {
+    winner.textContent = "白の勝ちです。";
+  } else {
+    winner.textContent = "引き分けです。";
   }
 }
 
@@ -292,7 +315,9 @@ function skipTurn() {
 
   if (!existPlaceableSquare()) {
     othelloColor = !othelloColor;
-    description.textContent = `パスしました。${othelloColor ? "黒の番です。" : "白の番です。"}`;
+    description.textContent = `パスしました。${
+      othelloColor ? "黒の番です。" : "白の番です。"
+    }`;
   } else {
     description.textContent = `置ける場所があります。${textBorW}`;
   }
